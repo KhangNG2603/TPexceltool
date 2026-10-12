@@ -79,19 +79,27 @@ class SheetView(QWidget):
         self.table.setStyleSheet(
             """
             QTableView {
+                color: #201f1e;
+                background-color: #ffffff;
                 gridline-color: #e1dfdd;
                 selection-background-color: #cae6da;
                 selection-color: #000000;
                 alternate-background-color: #fafafa;
-                background: #ffffff;
                 font-size: 13px;
                 border: none;
             }
+            QTableView QLineEdit {
+                color: #201f1e;
+                background-color: #ffffff;
+                border: 1.5px solid #107c41;
+                padding: 1px 2px;
+                font-size: 13px;
+            }
             QHeaderView::section {
-                background-color: #f3f2f1;
-                color: #323130;
+                background-color: #217346;
+                color: #ffffff;
                 padding: 6px;
-                border: 1px solid #d4d4d4;
+                border: 1px solid #1b5e38;
                 font-weight: 700;
                 font-size: 12px;
             }

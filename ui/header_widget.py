@@ -22,16 +22,21 @@ from core.company import (
 )
 
 
-class InvoiceHeader(QWidget):
+class InvoiceHeader(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("invoiceHeader")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(
             """
             #invoiceHeader {
-                background: #ffffff;
+                background-color: #ffffff;
                 border-bottom: 2px solid #e1dfdd;
                 padding-bottom: 4px;
+            }
+            QLabel {
+                color: #201f1e;
+                background: transparent;
             }
             QLabel#company {
                 font-family: "Segoe UI", "Times New Roman", sans-serif;
@@ -59,19 +64,20 @@ class InvoiceHeader(QWidget):
             QLineEdit, QDateEdit {
                 border: none;
                 border-bottom: 1.5px solid #8a8886;
-                background: #faf9f8;
+                background-color: #faf9f8;
                 padding: 4px 8px;
                 font-size: 13px;
                 border-radius: 2px;
                 color: #201f1e;
             }
             QLineEdit:hover, QDateEdit:hover {
-                background: #f3f2f1;
+                background-color: #f3f2f1;
                 border-bottom-color: #323130;
             }
             QLineEdit:focus, QDateEdit:focus {
-                background: #ffffff;
+                background-color: #ffffff;
                 border-bottom: 2px solid #107c41;
+                color: #201f1e;
             }
             """
         )

@@ -47,10 +47,14 @@ class InvoiceTableModel(QAbstractTableModel):
             font = QFont()
             font.setBold(True)
             return font
-        if role == Qt.ItemDataRole.ForegroundRole and orientation == Qt.Orientation.Horizontal:
-            return QBrush(QColor("#ffffff"))
-        if role == Qt.ItemDataRole.BackgroundRole and orientation == Qt.Orientation.Horizontal:
-            return QBrush(QColor("#217346"))
+        if role == Qt.ItemDataRole.ForegroundRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return QBrush(QColor("#ffffff"))
+            return QBrush(QColor("#323130"))
+        if role == Qt.ItemDataRole.BackgroundRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return QBrush(QColor("#217346"))
+            return QBrush(QColor("#f3f2f1"))
         return None
 
     def flags(self, index: QModelIndex):
@@ -99,6 +103,9 @@ class InvoiceTableModel(QAbstractTableModel):
             if role == Qt.ItemDataRole.BackgroundRole:
                 return QBrush(QColor("#e2efda"))
 
+            if role == Qt.ItemDataRole.ForegroundRole:
+                return QBrush(QColor("#107c41"))
+
             if role == Qt.ItemDataRole.TextAlignmentRole:
                 if col == 2:
                     return int(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
@@ -146,12 +153,12 @@ class InvoiceTableModel(QAbstractTableModel):
                 return QBrush(QColor("#f3f2f1"))
             if col == inv.stt_col():
                 return QBrush(QColor("#f8f8f8"))
-            return None
+            return QBrush(QColor("#ffffff"))
 
         if role == Qt.ItemDataRole.ForegroundRole:
             if col == inv.con_lai_col() and row.con_lai() < 0:
                 return QBrush(QColor("#9b1c1c"))
-            return None
+            return QBrush(QColor("#201f1e"))
 
         if role == Qt.ItemDataRole.ToolTipRole and col == inv.con_lai_col():
             return inv.con_lai_formula(row_idx)

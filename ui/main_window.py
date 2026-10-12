@@ -74,6 +74,7 @@ class MainWindow(QMainWindow):
         fx_row.addWidget(fx)
         fx_row.addWidget(self.formula, 1)
         fx_wrap = QWidget()
+        fx_wrap.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         fx_wrap.setLayout(fx_row)
         fx_wrap.setStyleSheet("background: #f3f2f1; border-bottom: 1px solid #e1dfdd;")
 
@@ -84,6 +85,8 @@ class MainWindow(QMainWindow):
         root.addWidget(fx_wrap)
         root.addWidget(self.sheet, 1)
         central = QWidget()
+        central.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        central.setStyleSheet("background-color: #ffffff;")
         central.setLayout(root)
         self.setCentralWidget(central)
 
@@ -165,6 +168,7 @@ class MainWindow(QMainWindow):
                 border: 1px solid #c8c6c4;
                 border-radius: 4px;
                 background: #faf9f8;
+                color: #201f1e;
                 font-size: 12px;
             }
             QLineEdit#search:focus {
@@ -208,8 +212,8 @@ class MainWindow(QMainWindow):
 
         add("Thêm dòng", self.add_row, QStyle.StandardPixmap.SP_FileDialogNewFolder)
         add("Xóa dòng", self.delete_rows, QStyle.StandardPixmap.SP_TrashIcon)
-        add("Thêm xe", self.add_xe)
-        add("Xóa xe", self.remove_xe)
+        add("Thêm xe", self.add_xe, QStyle.StandardPixmap.SP_FileDialogDetailedView)
+        add("Xóa xe", self.remove_xe, QStyle.StandardPixmap.SP_DialogDiscardButton)
         bar.addSeparator()
         add("Mẫu Senko", self.load_sample, QStyle.StandardPixmap.SP_BrowserReload)
 
@@ -220,6 +224,7 @@ class MainWindow(QMainWindow):
         self.search.returnPressed.connect(self.find_next)
         bar.addWidget(self.search)
         find_btn = QPushButton("Tìm")
+        find_btn.setObjectName("findBtn")
         find_btn.clicked.connect(self.find_next)
         bar.addWidget(find_btn)
 
@@ -288,7 +293,7 @@ class MainWindow(QMainWindow):
     def _update_title(self) -> None:
         name = Path(self.model.invoice.file_path).name if self.model.invoice.file_path else self._default_filename()
         mark = "*" if self.dirty else ""
-        self.setWindowTitle(f"{mark}{name} — Thiên Phúc")
+        self.setWindowTitle(f"{mark}{name}")
 
     def _update_status(self) -> None:
         inv = self.model.invoice
