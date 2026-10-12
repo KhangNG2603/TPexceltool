@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-from PySide6.QtCore import QDate, Qt, QTimer
-from PySide6.QtGui import QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QKeySequence, QShortcut
+from PySide6.QtCore import QDate, QStandardPaths, Qt, QTimer
+from PySide6.QtGui import QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.company import ICON_PATH, PNG_ICON_PATH
 from core.excel_io import export_invoice, load_invoice
 from core.invoice import Invoice, ProductRow
 from core.sample_data import sample_invoice
@@ -33,6 +34,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Thiên Phúc — Hóa đơn bán hàng")
+        if ICON_PATH.exists():
+            self.setWindowIcon(QIcon(str(ICON_PATH)))
+        elif PNG_ICON_PATH.exists():
+            self.setWindowIcon(QIcon(str(PNG_ICON_PATH)))
         self.resize(1280, 820)
         self.setAcceptDrops(True)
         self.dirty = False
@@ -108,6 +113,11 @@ class MainWindow(QMainWindow):
         QShortcut(QKeySequence.StandardKey.Find, self).activated.connect(self.search.setFocus)
         QShortcut(QKeySequence.StandardKey.Undo, self).activated.connect(self.undo)
         QShortcut(QKeySequence.StandardKey.Redo, self).activated.connect(self.redo)
+        QShortcut(QKeySequence.StandardKey.Save, self).activated.connect(self.save_file)
+        QShortcut(QKeySequence("Ctrl+Shift+S"), self).activated.connect(self.export_as)
+        QShortcut(QKeySequence("F12"), self).activated.connect(self.export_as)
+        QShortcut(QKeySequence.StandardKey.Open, self).activated.connect(self.open_file)
+        QShortcut(QKeySequence.StandardKey.New, self).activated.connect(self.new_file)
         QShortcut(QKeySequence("Ctrl+E"), self).activated.connect(self.export_as)
         QShortcut(QKeySequence("Ctrl+Shift+N"), self).activated.connect(self.add_row)
 
@@ -188,7 +198,8 @@ class MainWindow(QMainWindow):
 
         add("Tạo mới", self.new_file, QStyle.StandardPixmap.SP_FileIcon, QKeySequence.StandardKey.New)
         add("Mở Excel", self.open_file, QStyle.StandardPixmap.SP_DialogOpenButton, QKeySequence.StandardKey.Open)
-        add("Xuất 1 trang Excel", self.export_as, QStyle.StandardPixmap.SP_DialogSaveButton, QKeySequence.StandardKey.Save)
+        add("Lưu", self.save_file, QStyle.StandardPixmap.SP_DialogSaveButton, QKeySequence.StandardKey.Save)
+        add("Xuất Excel A4", self.export_as, QStyle.StandardPixmap.SP_DriveHDIcon)
         bar.addSeparator()
 
         self.act_undo = add("Hoàn tác", self.undo, QStyle.StandardPixmap.SP_ArrowBack, QKeySequence.StandardKey.Undo)
@@ -405,6 +416,9 @@ class MainWindow(QMainWindow):
             return
         self._load_file_path(path)
 
+    def load_file(self, path: str | Path) -> None:
+        self._load_file_path(str(path))
+
     def _load_file_path(self, path: str) -> None:
         try:
             inv = load_invoice(path)
@@ -424,11 +438,13 @@ class MainWindow(QMainWindow):
         self._write(path)
 
     def export_as(self) -> None:
+        doc_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.DocumentsLocation)
+        default_dir = Path(doc_dir) if doc_dir else Path.home()
         suggested = self.model.invoice.file_path or str(
-            Path.home() / self._default_filename()
+            default_dir / self._default_filename()
         )
         path, _ = QFileDialog.getSaveFileName(
-            self, "Xuất 1 trang Excel", suggested, "Excel (*.xlsx)"
+            self, "Xuất 1 trang Excel", suggested, "Excel (*.xlsx);;Tất cả (*.*)"
         )
         if not path:
             return
@@ -439,6 +455,15 @@ class MainWindow(QMainWindow):
     def _write(self, path: str) -> None:
         try:
             export_invoice(self.invoice(), path)
+        except PermissionError:
+            QMessageBox.critical(
+                self,
+                "Tệp đang bị khóa",
+                f"Không thể lưu vào:\n{path}\n\n"
+                "Tệp này đang được mở bởi Microsoft Excel hoặc một chương trình khác.\n"
+                "Vui lòng đóng tệp trong Excel rồi thử lại!",
+            )
+            return
         except Exception as exc:
             QMessageBox.critical(self, "Không lưu được", str(exc))
             return

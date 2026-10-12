@@ -1,6 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+
 block_cipher = None
+
+icon_path = 'assets/app_icon.ico' if os.path.exists('assets/app_icon.ico') else None
 
 a = Analysis(
     ['app.py'],
@@ -40,6 +44,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
+    icon=icon_path,
     disable_windowed_traceback=False,
 )
 

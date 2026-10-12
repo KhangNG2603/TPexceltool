@@ -4,13 +4,22 @@ import os
 
 block_cipher = None
 
+icon_path = 'assets/app_icon.ico' if os.path.exists('assets/app_icon.ico') else None
+
 payload_path = os.path.abspath(os.path.join('dist', 'TPexcelApp'))
 datas = []
 if os.path.exists(payload_path):
     datas.append((payload_path, 'payload'))
 
+uninstaller_path = os.path.abspath(os.path.join('dist', 'uninstall.exe'))
+if os.path.exists(uninstaller_path):
+    datas.append((uninstaller_path, '.'))
+
+if os.path.exists('assets'):
+    datas.append(('assets', 'assets'))
+
 a = Analysis(
-    ['installer_gui.py'],
+    ['installer_wizard.py'],
     pathex=[],
     binaries=[],
     datas=datas,
@@ -18,6 +27,7 @@ a = Analysis(
         'PySide6.QtCore',
         'PySide6.QtGui',
         'PySide6.QtWidgets',
+        'winreg',
     ],
     hookspath=[],
     hooksconfig={},
@@ -38,7 +48,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='TPexcel',
+    name='TPexcel_Setup',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -46,5 +56,6 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
+    icon=icon_path,
     disable_windowed_traceback=False,
 )

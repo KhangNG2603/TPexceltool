@@ -1,9 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys
 import os
 
 block_cipher = None
+
+icon_path = 'assets/app_icon.ico' if os.path.exists('assets/app_icon.ico') else None
 
 a = Analysis(
     ['app.py'],
@@ -16,6 +17,9 @@ a = Analysis(
         'PySide6.QtWidgets',
         'openpyxl',
         'PIL',
+        'pyexpat',
+        'xml.parsers.expat',
+        'xml.etree.ElementTree',
     ],
     hookspath=[],
     hooksconfig={},
@@ -36,7 +40,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='TPexcel',
+    name='TPexcelApp',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -44,8 +48,6 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
+    icon=icon_path,
     disable_windowed_traceback=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
 )

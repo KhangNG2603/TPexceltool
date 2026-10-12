@@ -32,18 +32,28 @@ jobs:
         run: |
           python build_windows_installer.py
 
-      - name: Release and Upload TPexcel.exe
+      - name: Release and Upload Installer & Portable
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: "TPexcel Release ${{ github.ref_name }}"
-          body: "Tải file **TPexcel.exe** bên dưới để cài đặt ứng dụng Thiên Phúc Hóa Đơn trên Windows."
-          files: dist/TPexcel.exe
+          body: |
+            ### 📦 Các tùy chọn tải về cho Windows:
+            - **`TPexcel_Setup.exe`**: Bộ cài đặt Setup Wizard từng bước (tạo shortcut Desktop, Start Menu, có gỡ cài đặt).
+            - **`TPexcelApp.exe`**: Tệp đơn chạy trực tiếp Portable không cần cài đặt.
+            - **`TPexcelApp-Portable.zip`**: Gói nén di động chạy ngay sau khi giải nén.
+          files: |
+            dist/TPexcel_Setup.exe
+            dist/TPexcelApp.exe
+            dist/TPexcelApp-Portable.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TPexcel-Windows-Installer
-          path: dist/TPexcel.exe
+          name: TPexcel-Windows-Packages
+          path: |
+            dist/TPexcel_Setup.exe
+            dist/TPexcelApp.exe
+            dist/TPexcelApp-Portable.zip
