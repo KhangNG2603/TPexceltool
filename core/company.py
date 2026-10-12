@@ -26,7 +26,7 @@ PNG_ICON_PATH = ROOT / "assets" / "app_icon.png"
 
 APP_NAME = "Thiên Phúc — Hóa đơn bán hàng"
 APP_SHORT_NAME = "TPexcel"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 APP_PUBLISHER = "Công ty TNHH TBĐ Thiên Phúc"
 
 COMPANY_NAME = "CÔNG TY TNHH XÂY DỰNG THƯƠNG MẠI THIẾT BỊ ĐIỆN THIÊN PHÚC"

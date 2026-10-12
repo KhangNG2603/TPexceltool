@@ -1,7 +1,7 @@
 ; Script Inno Setup 6 cho Thiên Phúc — Hóa đơn bán hàng & Quản lý xe
 #define MyAppName "Thiên Phúc — Hóa đơn bán hàng"
 #define MyAppShortName "TPexcel"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Công ty TNHH Thiết Bị Điện Thiên Phúc"
 #define MyAppURL "https://github.com/KhangNG2603/TPexceltool"
 #define MyAppExeName "TPexcelApp.exe"

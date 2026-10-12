@@ -7,7 +7,7 @@ import urllib.request
 from pathlib import Path
 
 
-def upload_release(token: str, repo: str = "KhangNG2603/TPexceltool", tag: str = "v1.0.0"):
+def upload_release(token: str, repo: str = "KhangNG2603/TPexceltool", tag: str = "v1.0.1"):
     print(f"🚀 Đang tạo GitHub Release '{tag}' trên repository {repo}...")
     headers = {
         "Authorization": f"token {token}",
@@ -21,7 +21,7 @@ def upload_release(token: str, repo: str = "KhangNG2603/TPexceltool", tag: str =
         "tag_name": tag,
         "target_commitish": "main",
         "name": f"TPexcel {tag} - Bộ cài đặt Hóa đơn bán hàng Windows",
-        "body": "### 📦 Hướng dẫn cài đặt cho Windows:\n1. Tải về file **`TPexcel_Setup.exe`** ở phần Assets bên dưới.\n2. Nhấp đúp vào file `TPexcel_Setup.exe` để mở Setup Wizard cài đặt tự động lên máy tính.",
+        "body": "### 📦 Các tùy chọn tải về cho Windows:\n- **`TPexcel_Setup.exe`**: Bộ cài đặt Setup Wizard từng bước (tạo shortcut Desktop, Start Menu, có gỡ cài đặt).\n- **`TPexcelApp.exe`**: Tệp đơn chạy trực tiếp Portable không cần cài đặt.\n- **`TPexcelApp-Portable.zip`**: Gói nén di động chạy ngay sau khi giải nén.",
         "draft": False,
         "prerelease": False,
     }).encode("utf-8")
