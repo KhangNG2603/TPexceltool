@@ -12,6 +12,16 @@ class InvoiceTableModel(QAbstractTableModel):
     def __init__(self, invoice: Invoice):
         super().__init__()
         self.invoice = invoice
+        self._batch_depth = 0
+
+    def begin_batch(self) -> None:
+        self._batch_depth += 1
+
+    def end_batch(self) -> None:
+        self._batch_depth = max(0, self._batch_depth - 1)
+        if self._batch_depth == 0:
+            self.layoutChanged.emit()
+            self.invoiceChanged.emit()
 
     def set_invoice(self, invoice: Invoice) -> None:
         self.beginResetModel()
@@ -213,6 +223,9 @@ class InvoiceTableModel(QAbstractTableModel):
             ],
         )
 
+        if self._batch_depth > 0:
+            return True
+
         # Notify total row changes for edited col and con_lai col
         tot_edited_index = self.index(total_row_idx, col)
         tot_sl_index = self.index(total_row_idx, inv.sl_col())
@@ -230,7 +243,8 @@ class InvoiceTableModel(QAbstractTableModel):
         self.beginInsertRows(QModelIndex(), pos, pos)
         idx = self.invoice.add_row(pos)
         self.endInsertRows()
-        self.invoiceChanged.emit()
+        if self._batch_depth == 0:
+            self.invoiceChanged.emit()
         return idx
 
     def remove_rows_at(self, rows: list[int]) -> None:

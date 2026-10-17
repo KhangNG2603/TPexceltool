@@ -6,6 +6,7 @@ from pathlib import Path
 from PySide6.QtCore import QDate, QStandardPaths, Qt, QTimer
 from PySide6.QtGui import QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
+    QApplication,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -15,6 +16,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QStatusBar,
     QStyle,
+    QTextEdit,
     QToolBar,
     QVBoxLayout,
     QWidget,
@@ -103,6 +105,7 @@ class MainWindow(QMainWindow):
         self.header.date.dateChanged.connect(lambda *_: self._mark_dirty())
         self.model.invoiceChanged.connect(self._on_invoice_changed)
         self.sheet.currentCellChanged.connect(self._on_cell)
+        self.sheet.statusMessage.connect(lambda msg: self.status.showMessage(msg, 3500))
 
         self.sheet.requestAddRow.connect(self.add_row)
         self.sheet.requestDeleteRows.connect(self.delete_rows)
@@ -111,8 +114,10 @@ class MainWindow(QMainWindow):
         self.sheet.requestUndo.connect(self.undo)
         self.sheet.requestRedo.connect(self.redo)
 
-        QShortcut(QKeySequence.StandardKey.Copy, self).activated.connect(self.sheet.copy_selection)
-        QShortcut(QKeySequence.StandardKey.Paste, self).activated.connect(self.sheet.paste_selection)
+        QShortcut(QKeySequence.StandardKey.Copy, self).activated.connect(self._copy_action)
+        QShortcut(QKeySequence.StandardKey.Paste, self).activated.connect(self._paste_action)
+        QShortcut(QKeySequence("Ctrl+D"), self).activated.connect(self.sheet.fill_down)
+        QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.sheet.fill_right)
         QShortcut(QKeySequence.StandardKey.Find, self).activated.connect(self.search.setFocus)
         QShortcut(QKeySequence.StandardKey.Undo, self).activated.connect(self.undo)
         QShortcut(QKeySequence.StandardKey.Redo, self).activated.connect(self.redo)
@@ -128,6 +133,20 @@ class MainWindow(QMainWindow):
         self._update_undo_redo_actions()
         self._update_status()
         QTimer.singleShot(0, lambda: self.sheet.table.setCurrentIndex(self.model.index(0, 1)))
+
+    def _copy_action(self) -> None:
+        focus = QApplication.focusWidget()
+        if isinstance(focus, (QLineEdit, QTextEdit)):
+            focus.copy()
+        else:
+            self.sheet.copy_selection()
+
+    def _paste_action(self) -> None:
+        focus = QApplication.focusWidget()
+        if isinstance(focus, (QLineEdit, QTextEdit)):
+            focus.paste()
+        else:
+            self.sheet.paste_selection()
 
     def _icon(self, std):
         return self.style().standardIcon(std)

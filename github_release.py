@@ -7,7 +7,7 @@ import urllib.request
 from pathlib import Path
 
 
-def upload_release(token: str, repo: str = "KhangNG2603/TPexceltool", tag: str = "v1.0.1"):
+def upload_release(token: str, repo: str = "KhangNG2603/TPexceltool", tag: str = "v1.0.2"):
     print(f"🚀 Đang tạo GitHub Release '{tag}' trên repository {repo}...")
     headers = {
         "Authorization": f"token {token}",
